@@ -12,6 +12,20 @@ provider "aws" {
 
 # 2. VPC 资源：这是我们在云上的一块隔离的虚拟地皮
 resource "aws_vpc" "main_vpc" {
+  lifecycle {
+    precondition {
+      condition     = alltrue([for index, start in local.subnet_starts : start >= local.vpc_start && local.subnet_ends[index] <= local.vpc_end])
+      error_message = "All subnets must be contained within the VPC CIDR."
+    }
+    precondition {
+      condition     = alltrue(flatten([for i, start in local.subnet_starts : [for j, other_start in local.subnet_starts : i >= j || local.subnet_ends[i] < other_start || local.subnet_ends[j] < start]]))
+      error_message = "Public and private subnet CIDRs must not overlap."
+    }
+    precondition {
+      condition     = alltrue([for zone in var.availability_zones : startswith(zone, var.aws_region)])
+      error_message = "Availability Zones must be in the configured AWS region."
+    }
+  }
   cidr_block           = var.vpc_cidr # Private address space for this lab
   enable_dns_support   = true         # 开启内部 DNS 解析支持
   enable_dns_hostnames = true         # 允许 EC2 实例获取自动分配的 DNS 主机名
@@ -26,7 +40,7 @@ resource "aws_subnet" "public_subnet_1" {
   vpc_id                  = aws_vpc.main_vpc.id
   cidr_block              = var.public_subnet_cidrs[0]
   availability_zone       = var.availability_zones[0]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "${var.project_name}-public-1"
@@ -38,7 +52,7 @@ resource "aws_subnet" "public_subnet_2" {
   vpc_id                  = aws_vpc.main_vpc.id
   cidr_block              = var.public_subnet_cidrs[1]
   availability_zone       = var.availability_zones[1]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "${var.project_name}-public-2"

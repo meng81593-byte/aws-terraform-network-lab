@@ -1,128 +1,94 @@
-# AWS Terraform Network Lab
+# AWS Terraform Network & Delivery Lab
 
-![Terraform](https://img.shields.io/badge/IaC-Terraform-844FBA?style=flat-square)
-![AWS](https://img.shields.io/badge/Cloud-AWS-232F3E?style=flat-square)
-![Region](https://img.shields.io/badge/Region-eu--west--3-555?style=flat-square)
+[![Terraform checks](https://github.com/meng81593-byte/aws-terraform-network-lab/actions/workflows/terraform-ci.yml/badge.svg)](https://github.com/meng81593-byte/aws-terraform-network-lab/actions/workflows/terraform-ci.yml)
+![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat-square&logo=terraform&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat-square&logo=amazonwebservices&logoColor=white)
 
-A Terraform learning project that defines an AWS VPC with public and private subnets across two Availability Zones in the Paris region.
+A cloud engineering portfolio lab: define and verify AWS network boundaries with Terraform, then connect them to a short-lived container delivery experiment for [Little Steps DevOps](https://github.com/meng81593-byte/little-steps-devops).
 
-The goal is to understand subnet isolation, Internet Gateway routing, and infrastructure dependencies before deploying an application. This repository currently defines the network foundation; it does not deploy the Little Steps application.
+## Network foundation
 
-## What is implemented
+- VPC `10.0.0.0/16` with DNS support and DNS hostnames enabled.
+- Public subnets `10.0.1.0/24` and `10.0.2.0/24` in `eu-west-3a` and `eu-west-3b`.
+- Private subnets `10.0.3.0/24` and `10.0.4.0/24` in the same two zones.
+- Internet Gateway, public default route, and explicit route-table associations.
+- Explicit private route tables with local VPC routing only; no NAT or Internet default route.
+- Automatic public IPv4 assignment is disabled on all subnets; the demo service opts in explicitly where needed.
+- Input variables, integration outputs, resource tags, provider version constraints, and a committed lockfile.
+- Native Terraform mock tests and GitHub Actions validation/configuration scanning.
 
-- One VPC: `10.0.0.0/16`, with DNS support and DNS hostnames enabled.
-- Two public subnets: `10.0.1.0/24` in `eu-west-3a` and `10.0.2.0/24` in `eu-west-3b`.
-- Two private subnets: `10.0.3.0/24` in `eu-west-3a` and `10.0.4.0/24` in `eu-west-3b`.
-- An Internet Gateway attached to the VPC.
-- A public route table with `0.0.0.0/0` routed to the Internet Gateway.
-- Explicit public route table associations for both public subnets.
-- Public IPv4 auto-assignment enabled on the public subnets.
-
-There are 10 explicitly declared Terraform resources. AWS also creates default VPC resources implicitly.
-
-## Architecture
+The root lab defines **14 explicit resources**. AWS also creates default VPC resources. Two Availability Zones provide a workload foundation; they do not establish application high availability on their own.
 
 ```mermaid
 flowchart TB
-    Internet[Internet] --- IGW[Internet Gateway]
-    subgraph VPC["VPC 10.0.0.0/16 · eu-west-3"]
-        RT["Public route table: 0.0.0.0/0 to IGW"]
-        subgraph AZA[eu-west-3a]
-            PUB1["Public: 10.0.1.0/24"]
-            PRIV1["Private: 10.0.3.0/24"]
-        end
-        subgraph AZB[eu-west-3b]
-            PUB2["Public: 10.0.2.0/24"]
-            PRIV2["Private: 10.0.4.0/24"]
-        end
-        RT --- PUB1
-        RT --- PUB2
-        DEFAULT["Default main route table: local VPC routing"]
-        DEFAULT --- PRIV1
-        DEFAULT --- PRIV2
+  Internet --> IGW[Internet Gateway]
+  subgraph VPC["VPC · eu-west-3"]
+    RT[Public default route to IGW]
+    subgraph A[eu-west-3a]
+      P1[Public 10.0.1.0/24]
+      S1[Private 10.0.3.0/24]
     end
-    IGW --- RT
+    subgraph B[eu-west-3b]
+      P2[Public 10.0.2.0/24]
+      S2[Private 10.0.4.0/24]
+    end
+    RT --- P1
+    RT --- P2
+    R1[Private route table 1: local only] --- S1
+    R2[Private route table 2: local only] --- S2
+  end
+  IGW --- RT
 ```
 
-The private subnets use the VPC's main route table because no private route table associations are declared. In a newly created VPC, this provides local VPC routing, with no Internet default route configured by this project. There is no NAT Gateway.
+## Run and verify
 
-Two Availability Zones provide a foundation for a resilient workload, but subnet placement alone does not establish application high availability.
-
-## Repository structure
-
-```text
-.
-├── main.tf       # Provider and network resources
-├── .gitignore    # Excludes Terraform working directory and local state files
-└── README.md
-```
-
-## Prerequisites
-
-- Terraform CLI.
-- AWS CLI for checking your authenticated identity.
-- An AWS account and a locally configured AWS profile with permission to manage the declared VPC resources.
-
-The current code does not pin the Terraform CLI or AWS provider version. Record the versions used for your deployment and commit `.terraform.lock.hcl` after initialization to make provider selection reproducible.
-
-## Run the lab
+Prerequisites: Terraform `>=1.7, <2.0`, a configured AWS identity, and permission to manage these lab resources. Tested locally with Terraform 1.16.2 and AWS provider 6.68.0. Provider constraints select major version 6; the lockfile records the resolved version.
 
 ```bash
 git clone https://github.com/meng81593-byte/aws-terraform-network-lab.git
 cd aws-terraform-network-lab
-aws sts get-caller-identity
-terraform init
-terraform fmt -check
+terraform init -lockfile=readonly
+terraform fmt -check -recursive
 terraform validate
-terraform plan
+terraform test
 ```
 
-If the formatting check fails, run `terraform fmt`, review the change, and repeat the check. Confirm the AWS account and review the plan before creating resources:
+The tests use a mock AWS provider and create no cloud resources. For a real deployment, review variables and the AWS account first:
 
 ```bash
+aws sts get-caller-identity
+terraform plan
 terraform apply
 ```
 
-Review the new plan shown by `apply`, then enter `yes` when it matches your intended changes. The region is hardcoded to `eu-west-3`; changing only your AWS CLI default region does not change this provider configuration.
+Default names preserve the original `little-steps` lab. An existing VPC with those names is **not automatically imported**. If you already deployed the lab, use its original state directory or deliberately import it; do not unintentionally create a duplicate from a new clone.
 
-## Verify the result
+Verify all subnet CIDRs/zones, public and private route associations, DNS settings, and the public default route in AWS. Repeat `terraform plan` after applying; an unchanged deployment should report no changes. Network configuration checks do not substitute for testing actual workload traffic.
 
-1. In the AWS VPC console, select `eu-west-3` and find `little-steps-vpc`.
-2. Confirm all four subnet CIDRs and their Availability Zones.
-3. Confirm both public subnets are associated with `little-steps-public-rt`.
-4. Confirm its default route targets `little-steps-igw`.
-5. Confirm the private subnets have no Internet default route.
-6. Run `terraform plan` again: an unchanged deployment should show no changes.
+## Variables and outputs
 
-These steps verify the network configuration. End-to-end connectivity testing requires a separately deployed workload; no EC2 instance, load balancer, or container service is created here.
+Copy the sanitized `terraform.tfvars.example` when customizing the region, project name, VPC CIDR, two zones, and subnet CIDRs. Choose valid, non-overlapping subnets contained in the VPC. Update zones together with the region.
 
-## Cleanup and state handling
+Outputs expose the VPC ID, public/private subnet IDs, and route table IDs. Use `terraform output` to inspect them locally; avoid publishing raw state or account metadata in screenshots.
 
-Run from the same working directory, with the same state and AWS account:
+## Container delivery experiment
+
+See [delivery/README.md](delivery/README.md). The separate components define:
+
+- ECR with immutable image tags and a GitHub OIDC publisher role restricted to the application repository's chosen branch.
+- A dedicated experiment VPC, ALB, Fargate service, health checks, logs, and rollback configuration.
+- Deployment using an image digest, with explicit cost and cleanup instructions.
+
+The experiment uses a distinct prefix and `10.42.0.0/16` CIDR to preserve the original lab. It is an operations exercise, with one task by default and short-lived HTTP hosting. It is not described as a permanent production environment.
+
+## State, cleanup, and evidence
+
+Keep state private. `.gitignore` excludes state, local variable files, saved plans, and Terraform working directories; `.terraform.lock.hcl` is committed. Use the same state and account to clean up:
 
 ```bash
 terraform destroy
 ```
 
-Review the destruction plan before confirming. Remove any separately created workloads that prevent subnet or VPC deletion. Keep the state until cleanup is complete.
+Review the plan before confirming. Destroy only resources owned by this lab, and retain state until cleanup succeeds. Read [state management](docs/state-management.md) before shared or CI operation. That document explains S3 encryption, versioning, native state locks, and migration; a remote backend is not silently enabled by this repository.
 
-Do not commit AWS credentials, Terraform state, or saved plan files. The current `.gitignore` excludes `.terraform/`, `terraform.tfstate`, and `terraform.tfstate.backup`; extend it before introducing other state filenames, local variable files, or saved plans.
-
-## Current limitations
-
-- Local state only; no remote backend or shared state locking configuration.
-- Region, Availability Zones, CIDRs, and names are hardcoded.
-- No outputs, version constraints, or automated validation workflow.
-- No explicitly managed private route tables, NAT, VPC endpoints, or workload security groups.
-- No deployment logs or connectivity test results are included.
-
-## Next milestones
-
-- [ ] Add version constraints, variables, outputs, and a committed provider lockfile.
-- [ ] Explicitly manage private route tables and their associations.
-- [ ] Add CI for formatting, initialization without a backend, validation, and configuration scanning.
-- [ ] Document a repeatable apply / verify / destroy exercise.
-- [ ] Add an S3 state backend with encryption, versioning, and S3 lockfile support when shared operation is needed.
-- [ ] Connect the network to a separately defined container deployment, documenting egress and cost choices.
-
-Related application: [Little Steps DevOps](https://github.com/meng81593-byte/little-steps-devops).
+Actual verified checks and remaining live validation are recorded in [verification.md](docs/verification.md).
