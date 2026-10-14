@@ -152,6 +152,8 @@ resource "aws_ecs_task_definition" "game" {
   }])
 }
 resource "aws_ecs_service" "game" {
+  # After bootstrap the application delivery workflow owns task revisions.
+  lifecycle { ignore_changes = [task_definition] }
   name                               = var.project_name
   cluster                            = aws_ecs_cluster.game.id
   task_definition                    = aws_ecs_task_definition.game.arn
