@@ -3,6 +3,8 @@
 *.tfvars
 *.tfvars.json
 *.tfplan
+*-plan.txt
+experiment-start.txt
 crash.log
 crash.*.log
 .terraformrc
