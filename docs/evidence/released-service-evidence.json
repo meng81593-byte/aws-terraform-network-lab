@@ -1,0 +1,173 @@
+{
+  "checkedAt": "2026-10-14T15:52:56.013Z",
+  "namespace": "little-steps-portfolio",
+  "preservedOriginalVpc": "vpc-0019fc4d8c004b15f",
+  "network": {
+    "id": "vpc-0a445663739eba279",
+    "cidr": "10.42.0.0/16",
+    "dns": true,
+    "subnets": [
+      {
+        "id": "subnet-04618132921caedd7",
+        "cidr": "10.42.2.0/24",
+        "zone": "eu-west-3b",
+        "autoPublicIp": false
+      },
+      {
+        "id": "subnet-0612844c9a6381c9e",
+        "cidr": "10.42.3.0/24",
+        "zone": "eu-west-3a",
+        "autoPublicIp": false
+      },
+      {
+        "id": "subnet-0b310e4f5ce5cb51b",
+        "cidr": "10.42.4.0/24",
+        "zone": "eu-west-3b",
+        "autoPublicIp": false
+      },
+      {
+        "id": "subnet-0bcf910cb0d21fd58",
+        "cidr": "10.42.1.0/24",
+        "zone": "eu-west-3a",
+        "autoPublicIp": false
+      }
+    ],
+    "routes": [
+      {
+        "id": "rtb-0952f86e217cb2851",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": [
+          "subnet-0612844c9a6381c9e"
+        ]
+      },
+      {
+        "id": "rtb-04370f06cf2bf212e",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          },
+          {
+            "destination": "0.0.0.0/0",
+            "gateway": "igw-02ec56cbf71be415c",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": [
+          "subnet-04618132921caedd7",
+          "subnet-0bcf910cb0d21fd58"
+        ]
+      },
+      {
+        "id": "rtb-0d6fbfeeb7cd84f71",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": [
+          "subnet-0b310e4f5ce5cb51b"
+        ]
+      },
+      {
+        "id": "rtb-06ed9f38eca1ca119",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": []
+      }
+    ]
+  },
+  "service": {
+    "status": "ACTIVE",
+    "desired": 1,
+    "running": 1,
+    "pending": 0,
+    "revision": "little-steps-portfolio:3",
+    "deployments": [
+      {
+        "status": "PRIMARY",
+        "rolloutState": "COMPLETED",
+        "reason": "ECS deployment ecs-svc/4156624089222588842 completed.",
+        "revision": "little-steps-portfolio:3",
+        "failedTasks": 0
+      }
+    ],
+    "events": [
+      {
+        "time": "2026-10-14T15:52:06.079Z",
+        "message": "(service little-steps-portfolio) has reached a steady state."
+      },
+      {
+        "time": "2026-10-14T15:52:06.078Z",
+        "message": "(service little-steps-portfolio) (deployment ecs-svc/4156624089222588842) deployment completed."
+      },
+      {
+        "time": "2026-10-14T15:51:05.942Z",
+        "message": "(service little-steps-portfolio, taskSet ecs-svc/3459266341107070570) has begun draining connections on 1 tasks."
+      },
+      {
+        "time": "2026-10-14T15:51:05.936Z",
+        "message": "(service little-steps-portfolio) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:eu-west-3:<account>:targetgroup/little-steps-portfolio/ce3340fe3f36ac3c)"
+      },
+      {
+        "time": "2026-10-14T15:51:04.565Z",
+        "message": "(service little-steps-portfolio) has stopped 1 running tasks: (task 0ba023d65b834903bfa18f3a8a429d14)."
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "status": "RUNNING",
+      "health": "HEALTHY",
+      "containers": [
+        {
+          "name": "game",
+          "health": "HEALTHY",
+          "digest": "sha256:4a0d13134a03da5990ec23c95bcaf8105e5d61f56574ddfbfc399d0aa5d9461f"
+        }
+      ]
+    }
+  ],
+  "targetHealth": [
+    {
+      "port": 8080,
+      "state": "healthy"
+    }
+  ],
+  "http": [
+    {
+      "path": "/healthz",
+      "status": 200,
+      "bytes": 3
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 481
+    },
+    {
+      "path": "/bundle.js",
+      "status": 200,
+      "bytes": 1267295
+    },
+    {
+      "path": "/assets/map0.json",
+      "status": 200,
+      "bytes": 3703
+    }
+  ]
+}

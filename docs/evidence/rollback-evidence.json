@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-10-14T15:41:58.560Z",
+  "restored": true,
+  "failureEvent": {
+    "time": "2026-10-14T15:40:45.221Z",
+    "message": "(service little-steps-portfolio) rolling back to deployment ecs-svc/3459266341107070570."
+  },
+  "stableRevision": "little-steps-portfolio:1",
+  "failedRevision": "little-steps-portfolio:2",
+  "activeRevision": "little-steps-portfolio:1",
+  "running": 1,
+  "pending": 0,
+  "deployments": [
+    {
+      "status": "PRIMARY",
+      "rolloutState": "COMPLETED",
+      "failedTasks": 0,
+      "revision": "little-steps-portfolio:1"
+    }
+  ],
+  "events": [
+    {
+      "time": "2026-10-14T15:41:24.275Z",
+      "message": "(service little-steps-portfolio) has reached a steady state."
+    },
+    {
+      "time": "2026-10-14T15:41:24.274Z",
+      "message": "(service little-steps-portfolio) (deployment ecs-svc/3459266341107070570) deployment completed."
+    },
+    {
+      "time": "2026-10-14T15:40:45.221Z",
+      "message": "(service little-steps-portfolio) rolling back to deployment ecs-svc/3459266341107070570."
+    },
+    {
+      "time": "2026-10-14T15:40:45.220Z",
+      "message": "(service little-steps-portfolio) (deployment ecs-svc/9346860851466908648) deployment failed: tasks failed to start."
+    },
+    {
+      "time": "2026-10-14T15:40:34.042Z",
+      "message": "(service little-steps-portfolio, taskSet ecs-svc/9346860851466908648) has begun draining connections on 1 tasks."
+    },
+    {
+      "time": "2026-10-14T15:40:34.035Z",
+      "message": "(service little-steps-portfolio) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:eu-west-3:<account>:targetgroup/little-steps-portfolio/ce3340fe3f36ac3c)"
+    },
+    {
+      "time": "2026-10-14T15:40:23.331Z",
+      "message": "(service little-steps-portfolio) has stopped 1 running tasks: (task 181c499f9c514edb903f0e354159df0e)."
+    },
+    {
+      "time": "2026-10-14T15:40:23.330Z",
+      "message": "(service little-steps-portfolio) (task 181c499f9c514edb903f0e354159df0e) failed container health checks."
+    },
+    {
+      "time": "2026-10-14T15:39:54.314Z",
+      "message": "(service little-steps-portfolio) registered 1 targets in (target-group arn:aws:elasticloadbalancing:eu-west-3:<account>:targetgroup/little-steps-portfolio/ce3340fe3f36ac3c)"
+    },
+    {
+      "time": "2026-10-14T15:39:34.084Z",
+      "message": "(service little-steps-portfolio) has started 1 tasks: (task 181c499f9c514edb903f0e354159df0e)."
+    },
+    {
+      "time": "2026-10-14T15:38:33.748Z",
+      "message": "(service little-steps-portfolio, taskSet ecs-svc/9346860851466908648) has begun draining connections on 1 tasks."
+    },
+    {
+      "time": "2026-10-14T15:38:33.742Z",
+      "message": "(service little-steps-portfolio) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:eu-west-3:<account>:targetgroup/little-steps-portfolio/ce3340fe3f36ac3c)"
+    },
+    {
+      "time": "2026-10-14T15:38:32.189Z",
+      "message": "(service little-steps-portfolio) has stopped 1 running tasks: (task e19210d40af54422b00063dbb7320d54)."
+    },
+    {
+      "time": "2026-10-14T15:38:32.188Z",
+      "message": "(service little-steps-portfolio) (task e19210d40af54422b00063dbb7320d54) failed container health checks."
+    },
+    {
+      "time": "2026-10-14T15:38:23.252Z",
+      "message": "(service little-steps-portfolio) registered 1 targets in (target-group arn:aws:elasticloadbalancing:eu-west-3:<account>:targetgroup/little-steps-portfolio/ce3340fe3f36ac3c)"
+    }
+  ]
+}

@@ -20,3 +20,9 @@ Cleanup order:
 5. Record the final Terraform and AWS readback results. Do not delete the state before cleanup succeeds.
 
 Sources: [AWS Fargate pricing](https://aws.amazon.com/fargate/pricing/), [ALB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/), [VPC pricing](https://aws.amazon.com/vpc/pricing/). Rates were extracted from the corresponding AWS public price-list service files, not inferred from an unrelated region.
+
+## Completed experiment
+
+Service provisioning began at 15:30:40 UTC on 14 October 2026. Final AWS cleanup readback passed at 16:24:51 UTC the same day, a verification window of about 54 minutes. Thirty service/network resources and five registry/identity resources were destroyed; the image and three task revisions were also removed. The original VPC was preserved. Temporary GitHub AWS role and endpoint variables were removed.
+
+The one-hour base model is USD 0.06466 for one task or USD 0.08446 for two tasks, with one ALB/LCU and public IPv4. The [duration model](evidence/cost-estimate-evidence.json) is a linear estimate and excludes service billing rounding as well as storage, logs, transfer, taxes and currency conversion. It is not the final AWS bill. [Cleanup readback](evidence/cleanup-evidence.json) confirms removal of the experiment's running resources; it does not assert that pre-existing account costs are zero.
