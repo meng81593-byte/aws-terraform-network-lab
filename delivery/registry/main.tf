@@ -11,9 +11,10 @@ variable "project_name" {
   type    = string
   default = "little-steps-portfolio"
 }
-variable "github_repository" {
-  type    = string
-  default = "meng81593-byte/little-steps-devops"
+variable "github_subject_prefix" {
+  type        = string
+  description = "Exact subject prefix returned by the repository's Actions OIDC customization API."
+  default     = "repo:meng81593-byte@252664009/little-steps-devops@1381492722"
 }
 variable "existing_oidc_provider_arn" {
   type    = string
@@ -54,7 +55,7 @@ resource "aws_iam_role" "publisher" {
     Effect = "Allow", Action = "sts:AssumeRoleWithWebIdentity", Principal = { Federated = local.oidc_arn },
     Condition = { StringEquals = {
       "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com",
-      "token.actions.githubusercontent.com:sub" = [for branch in var.trusted_branches : "repo:${var.github_repository}:ref:refs/heads/${branch}"]
+      "token.actions.githubusercontent.com:sub" = [for branch in var.trusted_branches : "${var.github_subject_prefix}:ref:refs/heads/${branch}"]
     } }
   }] })
 }

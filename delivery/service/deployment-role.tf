@@ -1,6 +1,7 @@
-variable "github_repository" {
-  type    = string
-  default = "meng81593-byte/little-steps-devops"
+variable "github_subject_prefix" {
+  type        = string
+  description = "Exact subject prefix returned by the repository's Actions OIDC customization API."
+  default     = "repo:meng81593-byte@252664009/little-steps-devops@1381492722"
 }
 data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
@@ -12,7 +13,7 @@ resource "aws_iam_role" "deployer" {
     Principal = { Federated = data.aws_iam_openid_connect_provider.github.arn },
     Condition = { StringEquals = {
       "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com",
-      "token.actions.githubusercontent.com:sub" = "repo:${var.github_repository}:ref:refs/heads/main"
+      "token.actions.githubusercontent.com:sub" = "${var.github_subject_prefix}:ref:refs/heads/main"
     } }
   }] })
 }
