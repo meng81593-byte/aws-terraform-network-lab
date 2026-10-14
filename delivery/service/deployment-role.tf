@@ -20,10 +20,10 @@ resource "aws_iam_role" "deployer" {
 resource "aws_iam_role_policy" "deployer" {
   role = aws_iam_role.deployer.id
   policy = jsonencode({ Version = "2012-10-17", Statement = [
-    # ECS registration requires '*'; this role can deploy only to the named service
-    # and can pass only its execution role, never an arbitrary IAM role.
-    { Effect = "Allow", Action = ["ecs:RegisterTaskDefinition"], Resource = "*" },
-    { Effect = "Allow", Action = ["ecs:DescribeTaskDefinition"], Resource = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:task-definition/${var.project_name}:*" },
+    # DescribeTaskDefinition has no resource-level authorization support.
+    # Registration, service updates and passing the execution role remain scoped.
+    { Effect = "Allow", Action = ["ecs:DescribeTaskDefinition"], Resource = "*" },
+    { Effect = "Allow", Action = ["ecs:RegisterTaskDefinition"], Resource = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:task-definition/${var.project_name}:*" },
     { Effect = "Allow", Action = ["ecs:DescribeServices", "ecs:UpdateService"], Resource = aws_ecs_service.game.id },
     { Effect = "Allow", Action = ["ecr:DescribeImages"], Resource = "arn:aws:ecr:${var.aws_region}:${data.aws_caller_identity.current.account_id}:repository/${var.project_name}" },
     { Effect = "Allow", Action = ["iam:PassRole"], Resource = aws_iam_role.execution.arn, Condition = { StringEquals = { "iam:PassedToService" = "ecs-tasks.amazonaws.com" } } }
