@@ -14,6 +14,7 @@ HTTP is used for the short-lived static game exercise because no domain/certific
 ## Release flow
 
 1. Initialize and review the `registry/` plan. Reuse a confirmed existing OIDC provider if appropriate.
+   Read `gh api repos/OWNER/REPO/actions/oidc/customization/sub` and set `github_subject_prefix` to the returned prefix. This repository uses GitHub's immutable owner/repository IDs in its OIDC subject. Do not copy the older name-only subject format or disable immutable subjects to work around a failed trust check. See [GitHub OIDC reference](https://docs.github.com/en/actions/reference/security/oidc).
 2. Apply the registry component and use its publisher-role ARN in the game's repository variable `AWS_PUBLISH_ROLE_ARN`.
 3. Publish the validated application image with its Git commit SHA; record the returned digest.
 4. Set `image_uri` for `service/` to the ECR URL **with `@sha256:...`**. Initialize and review that component's plan before applying.
@@ -22,6 +23,12 @@ HTTP is used for the short-lived static game exercise because no domain/certific
 7. Destroy the service component the same day, then remove only this experiment's ECR images and destroy the registry component. The registry defaults to `force_delete = false` to avoid unnoticed image deletion.
 
 One task is the low-cost demo default. Two subnets alone do not mean application high availability. If testing two replicas, temporarily set `desired_count = 2` and verify behavior before claiming that capability.
+
+## Updating an existing service
+
+Set the game's `AWS_DEPLOY_ROLE_ARN` and `DEMO_URL` repository variables from the service outputs. Dispatch `deploy.yml` on `main` with a verified ECR digest. The workflow saves the previous revision, checks image existence, updates only this service, waits for stability, and checks that the requested revision is active. A rolled-back service is not reported as a successful release.
+
+Terraform creates the first task definition and owns networking, IAM, service settings, and destruction. After bootstrap, GitHub Actions owns task revisions: the service ignores Terraform changes to `task_definition`. Subsequent task-definition revisions registered by the workflow must also be deregistered when removing the experiment. Restore a stable image through the same workflow for an intentional rollback. The deploy role can register task definitions (an ECS API requiring `Resource: *`), update only the experiment service, and pass only its execution role to ECS tasks. No long-lived AWS access keys are stored in GitHub.
 
 ## Costs and cleanup
 
