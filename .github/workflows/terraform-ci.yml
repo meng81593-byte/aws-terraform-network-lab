@@ -1,0 +1,33 @@
+name: Terraform checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.16.2
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false -lockfile=readonly
+      - run: terraform validate
+      - run: terraform test
+      - name: Validate delivery configurations
+        run: |
+          for directory in delivery/registry delivery/service; do
+            terraform -chdir="$directory" init -backend=false -lockfile=readonly
+            terraform -chdir="$directory" validate
+          done
+      - name: Scan infrastructure configuration
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: '1'
