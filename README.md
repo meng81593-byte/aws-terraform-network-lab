@@ -91,4 +91,4 @@ terraform destroy
 
 Review the plan before confirming. Destroy only resources owned by this lab, and retain state until cleanup succeeds. Read [state management](docs/state-management.md) before shared or CI operation. That document explains S3 encryption, versioning, native state locks, and migration; a remote backend is not silently enabled by this repository.
 
-Actual verified checks and remaining live validation are recorded in [verification.md](docs/verification.md).
+Verified checks, the live deployment and recovery exercise, and same-day cleanup are recorded in [verification.md](docs/verification.md).

@@ -1,0 +1,173 @@
+{
+  "checkedAt": "2026-10-14T15:42:20.596Z",
+  "namespace": "little-steps-portfolio",
+  "preservedOriginalVpc": "vpc-0019fc4d8c004b15f",
+  "network": {
+    "id": "vpc-0a445663739eba279",
+    "cidr": "10.42.0.0/16",
+    "dns": true,
+    "subnets": [
+      {
+        "id": "subnet-04618132921caedd7",
+        "cidr": "10.42.2.0/24",
+        "zone": "eu-west-3b",
+        "autoPublicIp": false
+      },
+      {
+        "id": "subnet-0612844c9a6381c9e",
+        "cidr": "10.42.3.0/24",
+        "zone": "eu-west-3a",
+        "autoPublicIp": false
+      },
+      {
+        "id": "subnet-0b310e4f5ce5cb51b",
+        "cidr": "10.42.4.0/24",
+        "zone": "eu-west-3b",
+        "autoPublicIp": false
+      },
+      {
+        "id": "subnet-0bcf910cb0d21fd58",
+        "cidr": "10.42.1.0/24",
+        "zone": "eu-west-3a",
+        "autoPublicIp": false
+      }
+    ],
+    "routes": [
+      {
+        "id": "rtb-0952f86e217cb2851",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": [
+          "subnet-0612844c9a6381c9e"
+        ]
+      },
+      {
+        "id": "rtb-04370f06cf2bf212e",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          },
+          {
+            "destination": "0.0.0.0/0",
+            "gateway": "igw-02ec56cbf71be415c",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": [
+          "subnet-0bcf910cb0d21fd58",
+          "subnet-04618132921caedd7"
+        ]
+      },
+      {
+        "id": "rtb-0d6fbfeeb7cd84f71",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": [
+          "subnet-0b310e4f5ce5cb51b"
+        ]
+      },
+      {
+        "id": "rtb-06ed9f38eca1ca119",
+        "routes": [
+          {
+            "destination": "10.42.0.0/16",
+            "gateway": "local",
+            "state": "active"
+          }
+        ],
+        "associatedSubnets": []
+      }
+    ]
+  },
+  "service": {
+    "status": "ACTIVE",
+    "desired": 1,
+    "running": 1,
+    "pending": 0,
+    "revision": "little-steps-portfolio:1",
+    "deployments": [
+      {
+        "status": "PRIMARY",
+        "rolloutState": "COMPLETED",
+        "reason": "ECS deployment ecs-svc/3459266341107070570 completed.",
+        "revision": "little-steps-portfolio:1",
+        "failedTasks": 0
+      }
+    ],
+    "events": [
+      {
+        "time": "2026-10-14T15:41:24.275Z",
+        "message": "(service little-steps-portfolio) has reached a steady state."
+      },
+      {
+        "time": "2026-10-14T15:41:24.274Z",
+        "message": "(service little-steps-portfolio) (deployment ecs-svc/3459266341107070570) deployment completed."
+      },
+      {
+        "time": "2026-10-14T15:40:45.221Z",
+        "message": "(service little-steps-portfolio) rolling back to deployment ecs-svc/3459266341107070570."
+      },
+      {
+        "time": "2026-10-14T15:40:45.220Z",
+        "message": "(service little-steps-portfolio) (deployment ecs-svc/9346860851466908648) deployment failed: tasks failed to start."
+      },
+      {
+        "time": "2026-10-14T15:40:34.042Z",
+        "message": "(service little-steps-portfolio, taskSet ecs-svc/9346860851466908648) has begun draining connections on 1 tasks."
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "status": "RUNNING",
+      "health": "HEALTHY",
+      "containers": [
+        {
+          "name": "game",
+          "health": "HEALTHY",
+          "digest": "sha256:4a0d13134a03da5990ec23c95bcaf8105e5d61f56574ddfbfc399d0aa5d9461f"
+        }
+      ]
+    }
+  ],
+  "targetHealth": [
+    {
+      "port": 8080,
+      "state": "healthy"
+    }
+  ],
+  "http": [
+    {
+      "path": "/healthz",
+      "status": 200,
+      "bytes": 3
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 481
+    },
+    {
+      "path": "/bundle.js",
+      "status": 200,
+      "bytes": 1267295
+    },
+    {
+      "path": "/assets/map0.json",
+      "status": 200,
+      "bytes": 3703
+    }
+  ]
+}

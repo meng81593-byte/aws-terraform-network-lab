@@ -1,0 +1,8 @@
+{
+  "start": "2026-10-14T15:30:40.1952604Z",
+  "end": "2026-10-14T16:24:51.690Z",
+  "elapsedMinutes": 54.191583333333334,
+  "oneTaskBaseUsd": 0.05840046297222221,
+  "twoTaskBaseUsd": 0.07628368547222221,
+  "assumptions": "One ALB, one LCU, two ALB public IPv4, one or two 0.25 vCPU/0.5 GB tasks with a public IPv4; excludes ECR storage, logs, transfer, tax and FX. This is a model, not an actual AWS bill."
+}

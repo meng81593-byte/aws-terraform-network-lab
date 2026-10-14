@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-14T16:24:51.690Z",
+  "namespace": "little-steps-portfolio",
+  "originalVpcPreserved": true,
+  "experimentVpcAbsent": true,
+  "experimentNetworkInterfaces": 0,
+  "activeExperimentClusters": 0,
+  "activeExperimentTaskDefinitions": 0,
+  "repositoryAbsent": true,
+  "albAbsent": true,
+  "targetGroupAbsent": true,
+  "rolesAbsent": {
+    "publisher": true,
+    "deployer": true,
+    "execution": true
+  },
+  "githubOidcProviderAbsent": true,
+  "experimentLogGroups": 0,
+  "complete": true
+}
